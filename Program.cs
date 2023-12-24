@@ -197,73 +197,73 @@ Console.WriteLine(Print(game));
 
 static void AssertGame(string input, string expectedResult)
 {
-    var game = ParseGame(input);
-    var solver = new Solver(game);
-    if (!solver.TrySolve())
-    {
-        throw new Exception("Game could not be solved");
-    }
+  var game = ParseGame(input);
+  var solver = new Solver(game);
+  if (!solver.TrySolve())
+  {
+    throw new Exception("Game could not be solved");
+  }
 
-    var printed = Print(game);
+  var printed = Print(game);
 
-    if (Normalize(expectedResult) != Normalize(printed))
-    {
-        Console.WriteLine("Expected:");
-        Console.WriteLine(expectedResult);
-        Console.WriteLine("Actual:");
-        Console.WriteLine(printed);
+  if (Normalize(expectedResult) != Normalize(printed))
+  {
+    Console.WriteLine("Expected:");
+    Console.WriteLine(expectedResult);
+    Console.WriteLine("Actual:");
+    Console.WriteLine(printed);
 
-        throw new Exception("Game did not match expected result");
-    }
+    throw new Exception("Game did not match expected result");
+  }
 }
 
 static string Normalize(string input) => input.Trim().Replace("\r", "").Replace("\n", "");
 
 static Game ParseGame(string input)
 {
-    input = Normalize(input);
-    if (input.Length != Game.CellCount)
-    {
-        throw new ArgumentException("Input must be 81 characters long");
-    }
+  input = Normalize(input);
+  if (input.Length != Game.CellCount)
+  {
+    throw new ArgumentException("Input must be 81 characters long");
+  }
 
-    var game = new Game();
-    for (int i = 0; i < input.Length; i++)
+  var game = new Game();
+  for (int i = 0; i < input.Length; i++)
+  {
+    var c = input[i];
+    if (c == '_')
     {
-        var c = input[i];
-        if (c == '_')
-        {
-            continue;
-        }
-        else
-        {
-            game[i] = new((short)(c - '0'));
-        }
+      continue;
     }
+    else
+    {
+      game[i] = new((short)(c - '0'));
+    }
+  }
 
-    return game;
+  return game;
 }
 
 static string Print(Game game)
 {
-    var sb = new StringBuilder();
-    for (int i = 0; i < Game.CellCount; i++)
+  var sb = new StringBuilder();
+  for (int i = 0; i < Game.CellCount; i++)
+  {
+    ref var cell = ref game[i];
+    if (cell.HasValue)
     {
-        ref var cell = ref game[i];
-        if (cell.HasValue)
-        {
-            sb.Append(cell.Value);
-        }
-        else
-        {
-            sb.Append('_');
-        }
-
-        if (i % 9 == 8)
-        {
-            sb.AppendLine();
-        }
+      sb.Append(cell.Value);
+    }
+    else
+    {
+      sb.Append('_');
     }
 
-    return sb.ToString();
+    if (i % 9 == 8)
+    {
+      sb.AppendLine();
+    }
+  }
+
+  return sb.ToString();
 }
